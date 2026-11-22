@@ -1,5 +1,4 @@
-"""Split rows safely and turn them into small batches of tensors.
-"""
+"""Split rows safely and turn them into small batches of tensors."""
 
 from dataclasses import dataclass
 

@@ -18,9 +18,7 @@ from train import run_epoch, set_seed, train_many, write_csv
 from train_keras import test_mae, train_keras
 
 REPORTS = Path(__file__).resolve().parent / "reports"
-COLUMNS = [
-    "framework", "seed", "best_epoch", "validation_mae", "test_mae", "seconds"
-]
+COLUMNS = ["framework", "seed", "best_epoch", "validation_mae", "test_mae", "seconds"]
 
 
 def compare_one_seed(prepared, seed, epochs=EPOCHS, checkpoint_dir=None):
