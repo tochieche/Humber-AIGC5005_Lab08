@@ -66,3 +66,67 @@ def compare_one_seed(prepared, seed, epochs=EPOCHS, checkpoint_dir=None):
         "seconds": round(keras_seconds, 3),
     }
     return [torch_result, keras_result]
+
+
+def main(epochs=EPOCHS):
+    """Create all six scores with one command and clean seed-by-seed runs.
+
+    Every seed starts in its own Python process. This avoids one framework
+    carrying memory or hidden state from an earlier seed into the next.
+    """
+    REPORTS.mkdir(exist_ok=True)
+    results = []
+    for seed in SEEDS:
+        with tempfile.TemporaryDirectory() as folder:
+            result_path = Path(folder) / "two_scores.json"
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(Path(__file__).resolve()),
+                    "--single-seed",
+                    str(seed),
+                    "--seed-output",
+                    str(result_path),
+                    "--epochs",
+                    str(epochs),
+                ],
+                check=True,
+            )
+            # A short-lived child keeps large neural-network libraries fresh.
+            two_results = json.loads(result_path.read_text(encoding="utf-8"))
+        results.extend(two_results)
+        for result in two_results:
+            print(
+                f"{result['framework']:7} seed={seed} "
+                f"val MAE={result['validation_mae']:.3f} "
+                f"test MAE={result['test_mae']:.3f} "
+                f"seconds={result['seconds']:.1f}",
+                flush=True,
+            )
+    write_csv(REPORTS / "comparison.csv", results, COLUMNS)
+    print("Saved reports/comparison.csv with six training runs")
+    return results
+
+
+def save_single_seed(seed, epochs, output):
+    """Internal worker: do ONE pair in a fresh process, then save results."""
+    prepared = prepare_data(seed=DATA_SEED)
+    results = compare_one_seed(prepared, seed, epochs=epochs)
+    Path(output).write_text(json.dumps(results, indent=2), encoding="utf-8")
+    print(f"Worker finished seed {seed} using Keras {keras.backend.backend()}")
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Fair 3-seed framework benchmark")
+    parser.add_argument("--epochs", type=int, default=EPOCHS)
+    parser.add_argument("--single-seed", type=int, help=argparse.SUPPRESS)
+    parser.add_argument("--seed-output", help=argparse.SUPPRESS)
+    args = parser.parse_args()
+    if args.epochs < 1:
+        parser.error("epochs must be at least 1")
+    if args.single_seed is not None:
+        if not args.seed_output:
+            parser.error("--seed-output must be supplied to a worker")
+        save_single_seed(args.single_seed, args.epochs, args.seed_output)
+    else:
+        main(epochs=args.epochs)
