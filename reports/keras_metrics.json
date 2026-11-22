@@ -1,0 +1,8 @@
+{
+  "seed": 42,
+  "best_epoch": 90,
+  "validation_mae": 3.012449026107788,
+  "test_mae": 2.8523566722869873,
+  "keras_backend": "tensorflow",
+  "epochs": 90
+}

@@ -49,3 +49,10 @@ def copy_torch_weights(torch_model, keras_model):
 def prediction_difference(torch_model, keras_model, x_values):
     """Largest difference between the two models for the same input rows."""
     import numpy as np
+    import torch
+
+    torch_model.eval()
+    with torch.no_grad():
+        a = torch_model(torch.as_tensor(x_values, dtype=torch.float32)).numpy()
+    b = keras_model.predict(x_values, verbose=0)
+    return float(np.max(np.abs(a.reshape(-1) - b.reshape(-1))))

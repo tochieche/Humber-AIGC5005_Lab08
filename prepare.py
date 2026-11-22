@@ -1,8 +1,4 @@
 """Split rows safely and turn them into small batches of tensors.
-
-Imagine studying for a quiz. Training rows are your practice questions,
-validation rows help you pick a study method, and test rows are the final quiz.
-We must not peek at the final quiz while studying!
 """
 
 from dataclasses import dataclass

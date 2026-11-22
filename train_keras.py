@@ -113,3 +113,12 @@ def main(epochs=EPOCHS):
     print(f"Validation MAE: {result['validation_mae']:.3f} bikes")
     print(f"Final test MAE: {result['test_mae']:.3f} bikes")
     return result
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Train the bike model with Keras")
+    parser.add_argument("--epochs", type=int, default=EPOCHS)
+    args = parser.parse_args()
+    if args.epochs < 1:
+        parser.error("epochs must be at least 1")
+    main(epochs=args.epochs)
