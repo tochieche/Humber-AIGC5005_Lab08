@@ -1,7 +1,7 @@
 """Run the whole project with one command: python train.py.
 
-The network guesses a bike count, checks how wrong it was, 
-and gently changes its numbers. 
+The network guesses a bike count, checks how wrong it was,
+and gently changes its numbers.
 
 It does this many times.
 """

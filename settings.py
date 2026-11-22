@@ -1,4 +1,5 @@
 """One set of settings for the TWO frameworks for the comparison."""
+
 DATA_SEED = 42  # This fixes which rows belong to train, validation, and test.
 SEEDS = (42, 43, 44)  # Three different starts for a trustworthy comparison.
 HIDDEN_SIZE = 32  # Both neural networks have two layers of this width.
