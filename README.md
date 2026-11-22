@@ -47,7 +47,7 @@ restores its best weights. Keras uses `EarlyStopping` with
 `restore_best_weights=True` and `ModelCheckpoint` to save the best model.
 
 
-## Results
+## Results 
 
 Run the three scripts to recreate these artifacts:
 
